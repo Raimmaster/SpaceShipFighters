@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour {
 	public float speedForce = 5f;
 	public float increaseBoost = 2f;
 	public float defaultBoost = 1f;
-	
+
 	// Use this for initialization
 	void Start () {
 		playerBody = this.GetComponent<Rigidbody2D>();
