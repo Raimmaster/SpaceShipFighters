@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour {
 
 	Rigidbody2D playerBody;
 	public float speedForce = 5f;
-	public float increaseBoost = 2f;
+	public float increaseBoost = 10f;
 	public float defaultBoost = 1f;
 
 	// Use this for initialization
@@ -18,9 +18,9 @@ public class PlayerController : MonoBehaviour {
 	void FixedUpdate () {
 		Vector2 moveVector = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"),
 			CrossPlatformInputManager.GetAxis("Vertical")) * speedForce;
-
-		bool isBoost = CrossPlatformInputManager.GetButton("Boost");
+		Debug.Log(moveVector.x);
+		bool isBoost = CrossPlatformInputManager.GetButton("Boton");
 		Debug.Log(isBoost);
-		playerBody.AddForce(moveVector * (isBoost ? increaseBoost : defaultBoost));
+		playerBody.AddForce(moveVector * (isBoost? increaseBoost: defaultBoost));
 	}
 }
