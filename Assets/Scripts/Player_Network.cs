@@ -3,10 +3,18 @@ using System.Collections;
 using UnityEngine.Networking;
 
 public class Player_Network : NetworkBehaviour {
-	public float movementLerpRate = 15;
+	
+	//Player movements variables
 	[SyncVar] private Vector2 syncPosition;
 
+	public float movementLerpRate = 15;
 	private Transform playerTransform;
+
+	//player rotation variables
+	[SyncVar] private Quaternion syncPlayerRotation;
+	
+	public float rotationLerpRate = 15;
+
 	void Start () {
 		playerTransform = GetComponent<Transform>();
 		if(!isLocalPlayer){
@@ -17,6 +25,8 @@ public class Player_Network : NetworkBehaviour {
 	private void FixedUpdate(){
 		LerpPosition();
 		Sendpostion();
+		LerpRotation();
+		SendRotation();
 	}
 
 	private void LerpPosition()
@@ -24,7 +34,6 @@ public class Player_Network : NetworkBehaviour {
 		if(!isLocalPlayer){
 			playerTransform.position = Vector2.Lerp(playerTransform.position, syncPosition, Time.deltaTime * movementLerpRate);
 		}
-
 	}
 
 	[Command]
@@ -37,5 +46,22 @@ public class Player_Network : NetworkBehaviour {
 		if(isLocalPlayer)
 			CmdProvidePosToServer(playerTransform.position);
 	}
+
+	private void LerpRotation(){
+		if(!isLocalPlayer){
+			playerTransform.rotation = Quaternion.Lerp(playerTransform.rotation, syncPlayerRotation, Time.deltaTime * rotationLerpRate);
+		}
+	}
 	
+	[Command]
+	private void CmdProvideRotationtoServer(Quaternion rotation){
+		syncPlayerRotation = rotation;
+	}
+
+	[ClientCallback]
+	private void SendRotation(){
+		if(!isLocalPlayer){
+			CmdProvideRotationtoServer(playerTransform.rotation);
+		}
+	}
 }
