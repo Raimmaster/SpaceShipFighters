@@ -14,6 +14,8 @@ namespace UnityStandardAssets.CrossPlatformInput
 			OnlyVertical // Only vertical
 		}
 
+		private float screenChangeWidth=Screen.width;
+		private float screenChangeheight=Screen.height;
 		public int MovementRange = 100;
 		public AxisOption axesToUse = AxisOption.Both; // The options for the axes that the still will use
 		public string horizontalAxisName = "Horizontal"; // The name given to the horizontal axis for the cross platform input
@@ -27,12 +29,29 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		void OnEnable()
 		{
-			CreateVirtualAxes();
+			//m_StartPos = transform.position;
+            CreateVirtualAxes();
+            Debug.Log(m_StartPos.x+ " 1 "+m_StartPos.y);
 		}
 
         void Start()
         {
             m_StartPos = transform.position;
+            //CreateVirtualAxes();
+            Debug.Log(m_StartPos.x+ " 2 "+m_StartPos.y+" Screnn.x "+Screen.width+" y: "+Screen.height);
+        }
+
+        void updateStartPos(){
+
+        	if((screenChangeheight - Screen.height)!=0){
+        			/*m_StartPos.y-= (screenChangeheight - Screen.height)/2;
+        			screenChangeheight = Screen.height;*/
+        			Start();
+        		}else if((screenChangeWidth - Screen.width) !=0){
+        			/*m_StartPos.x-= (screenChangeWidth - Screen.width)/2;
+        			screenChangeWidth = Screen.width;*/
+        			Start();
+        		}
         }
 
 		void UpdateVirtualAxes(Vector3 value)
@@ -78,25 +97,28 @@ namespace UnityStandardAssets.CrossPlatformInput
 			if (m_UseX)
 			{
 				int delta = (int)(data.position.x - m_StartPos.x);
-				delta = Mathf.Clamp(delta, - MovementRange, MovementRange);
+				//delta = Mathf.Clamp(delta, - MovementRange, MovementRange);
 				newPos.x = delta;
 			}
 
 			if (m_UseY)
 			{
 				int delta = (int)(data.position.y - m_StartPos.y);
-				delta = Mathf.Clamp(delta, -MovementRange, MovementRange);
+				//delta = Mathf.Clamp(delta, -MovementRange, MovementRange);
 				newPos.y = delta;
 			}
-			transform.position = new Vector3(m_StartPos.x + newPos.x, m_StartPos.y + newPos.y, m_StartPos.z + newPos.z);
+			//transform.position = new Vector3(m_StartPos.x + newPos.x, m_StartPos.y + newPos.y, m_StartPos.z + newPos.z);
+			transform.position = Vector3.ClampMagnitude(new Vector3(newPos.x,newPos.y,newPos.z), MovementRange) + m_StartPos;
 			UpdateVirtualAxes(transform.position);
 		}
 
 
 		public void OnPointerUp(PointerEventData data)
 		{
+			//updateStartPos();
 			transform.position = m_StartPos;
 			UpdateVirtualAxes(m_StartPos);
+			Debug.Log(m_StartPos.x+ " 2 "+m_StartPos.y+" Screnn.x "+Screen.width+" y: "+Screen.height);
 		}
 
 
