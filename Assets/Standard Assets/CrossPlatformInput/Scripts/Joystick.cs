@@ -31,14 +31,14 @@ namespace UnityStandardAssets.CrossPlatformInput
 		{
 			//m_StartPos = transform.position;
             CreateVirtualAxes();
-            Debug.Log(m_StartPos.x+ " 1 "+m_StartPos.y);
+            //Debug.Log(m_StartPos.x+ " 1 "+m_StartPos.y);
 		}
 
         void Start()
         {
             m_StartPos = transform.position;
             //CreateVirtualAxes();
-            Debug.Log(m_StartPos.x+ " 2 "+m_StartPos.y+" Screnn.x "+Screen.width+" y: "+Screen.height);
+            //Debug.Log(m_StartPos.x+ " 2 "+m_StartPos.y+" Screnn.x "+Screen.width+" y: "+Screen.height);
         }
 
         void updateStartPos(){
@@ -118,7 +118,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 			//updateStartPos();
 			transform.position = m_StartPos;
 			UpdateVirtualAxes(m_StartPos);
-			Debug.Log(m_StartPos.x+ " 2 "+m_StartPos.y+" Screnn.x "+Screen.width+" y: "+Screen.height);
+			//Debug.Log(m_StartPos.x+ " 2 "+m_StartPos.y+" Screnn.x "+Screen.width+" y: "+Screen.height);
 		}
 
 

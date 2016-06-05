@@ -23,15 +23,16 @@ public class PlayerController : NetworkBehaviour {
 	
 	//FixedUpdate por usar vectores, fuerzas
 	void FixedUpdate () {
-		Vector2 moveVector = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"),
+		/*Vector2 moveVector = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"),
 			CrossPlatformInputManager.GetAxis("Vertical")) * speedForce;
 		//Debug.Log("Z:"+this.rot);
 		//cont++;
 		//Debug.Log(moveVector.x);
-		bool isBoost = CrossPlatformInputManager.GetButton("Boton");
+		
 		//Debug.Log(isBoost);
 		playerBody.AddForce(moveVector * (isBoost? increaseBoost: defaultBoost));
-		playerBody.MoveRotation(playerBody.rotation+CrossPlatformInputManager.GetAxis("VerticalRot")*rotationvelocity);
+		playerBody.MoveRotation(playerBody.rotation+CrossPlatformInputManager.GetAxis("VerticalRot")*rotationvelocity);*/
+		bool isBoost = CrossPlatformInputManager.GetButton("Boton");
 		if(Input.GetKeyDown(KeyCode.Space) || isShoting){
 			CmdFire();
 		}
@@ -58,23 +59,23 @@ public class PlayerController : NetworkBehaviour {
 			transform.position =pos;
 		}
 
-		/*Quaternion rot = transform.rotation;
+		Quaternion rot = transform.rotation;
 		float z = rot.eulerAngles.z;
 
 		z-= CrossPlatformInputManager.GetAxis("VerticalRot") *rotationvelocity;
-		Debug.Log(CrossPlatformInputManager.GetAxis("VerticalRot")+" rota: "+ rotationvelocity);
+		//Debug.Log(CrossPlatformInputManager.GetAxis("VerticalRot")+" rota: "+ rotationvelocity);
 
 		rot = Quaternion.Euler(0,0,z);
 
 		transform.rotation = rot;
 
-		Vector3 pos = transform.position;
+		Vector3 pos2 = transform.position;
 
-		Vector3 velocity = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal") * speedForce * Time.deltaTime, CrossPlatformInputManager.GetAxis("Vertical") * speedForce * Time.deltaTime,0);
+		Vector3 velocity = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal") * speedForce * Time.deltaTime, CrossPlatformInputManager.GetAxis("Vertical") * speedForce * Time.deltaTime,0) * (isBoost? increaseBoost: defaultBoost);
 
-		pos += rot * velocity;
+		pos2 += rot * velocity;
 
-		transform.position = pos;*/
+		transform.position = pos2;
 
 	}
 	void Update() {
