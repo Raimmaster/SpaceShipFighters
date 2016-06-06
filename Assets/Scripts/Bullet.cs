@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour {
 		Debug.Log("Collision");
 		Health health = hit.GetComponent<Health>();
 		if(health != null){
-			health.takeDamage(10);
+			health.takeDamage(1);
 			Debug.Log("ATACANDO");
 		}
 		Debug.Log("Salio");

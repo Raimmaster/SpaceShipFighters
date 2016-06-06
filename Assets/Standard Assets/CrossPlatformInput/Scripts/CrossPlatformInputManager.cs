@@ -17,8 +17,6 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		private static VirtualInput s_TouchInput;
 		private static VirtualInput s_HardwareInput;
-
-
 		static CrossPlatformInputManager()
 		{
 			s_TouchInput = new MobileInput();
@@ -42,6 +40,13 @@ namespace UnityStandardAssets.CrossPlatformInput
 					activeInput = s_TouchInput;
 					break;
 			}
+		}
+		public static void SetMood(float amount){
+			activeInput.SetMood(amount);
+		} 
+
+		public static float GetMood(){
+			return activeInput.GetMood();
 		}
 
 		public static bool AxisExists(string name)
