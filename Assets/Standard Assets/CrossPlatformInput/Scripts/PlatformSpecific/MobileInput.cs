@@ -18,6 +18,8 @@ namespace UnityStandardAssets.CrossPlatformInput.PlatformSpecific
             CrossPlatformInputManager.RegisterVirtualAxis(new CrossPlatformInputManager.VirtualAxis(name));
         }
 
+        
+
 
         public override float GetAxis(string name, bool raw)
         {

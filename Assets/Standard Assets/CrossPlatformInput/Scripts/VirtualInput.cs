@@ -8,7 +8,7 @@ namespace UnityStandardAssets.CrossPlatformInput
     public abstract class VirtualInput
     {
         public Vector3 virtualMousePosition { get; private set; }
-        
+        protected float mood=0;
         
         protected Dictionary<string, CrossPlatformInputManager.VirtualAxis> m_VirtualAxes =
             new Dictionary<string, CrossPlatformInputManager.VirtualAxis>();
@@ -29,7 +29,13 @@ namespace UnityStandardAssets.CrossPlatformInput
             return m_VirtualButtons.ContainsKey(name);
         }
 
+        public void SetMood(float amount){
+            mood = amount;
+        }
 
+        public float GetMood(){
+            return mood;
+        }
         public void RegisterVirtualAxis(CrossPlatformInputManager.VirtualAxis axis)
         {
             // check if we already have an axis with that name and log and error if we do
@@ -81,6 +87,9 @@ namespace UnityStandardAssets.CrossPlatformInput
             }
         }
 
+        public void Update(){
+            Debug.Log("Nada");
+        }
 
         public void UnRegisterVirtualButton(string name)
         {
