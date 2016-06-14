@@ -6,13 +6,12 @@ using System;
 using UnityEngine.UI;
 
 public class PlayerController : NetworkBehaviour {
-
 	Rigidbody2D playerBody;
 	public float speedForce = 5f;
 	public float rotationvelocity = 5f;
 	public float increaseBoost = 10f;
 	public float defaultBoost = 1f;
-	private float fireDelay = 0.5f; 
+	private float fireDelay = 0.5f;
 	private float shootingTimer =0.0f;
 	//states
 	private bool isShoting=false;
