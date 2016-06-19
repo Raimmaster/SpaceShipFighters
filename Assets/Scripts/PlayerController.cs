@@ -88,6 +88,10 @@ public class PlayerController : NetworkBehaviour {
 			CrossPlatformInputManager.GetAxis("Vertical")) * speedForce;
 		bool isBoost = CrossPlatformInputManager.GetButton("Boton");
 		playerBody.AddForce(moveVector * (isBoost? increaseBoost: defaultBoost));
+
+		if(isBoost)
+			SoundEffectsHelper.Instance.MakeBoostSound();
+
 		//Updating the player rotation
 		//playerBody.MoveRotation(playerBody.rotation+CrossPlatformInputManager.GetAxis("VerticalRot")*rotationvelocity);
 		float LO = CrossPlatformInputManager.GetAxis("VerticalRot");
@@ -126,7 +130,7 @@ public class PlayerController : NetworkBehaviour {
 		}
 
 		//Restrict the ship to the camara's bounderies
-		/*
+
 		Vector3 pos = transform.position;
 		if(pos.y + shipBounderyRadious > camViewSize) {
 			pos.y = camViewSize- shipBounderyRadious;
@@ -146,12 +150,13 @@ public class PlayerController : NetworkBehaviour {
 		if(pos.x-shipBounderyRadious < -widthOrtho) {
 			pos.x = -widthOrtho +shipBounderyRadious;
 			transform.position =pos;
-		}*/
+		}
 		Debug.Log("Cam size: " + camViewSize);
 		Debug.Log("S Width: " + Screen.width);
 		Debug.Log("S Height: " + Screen.height);
 
-		Vector3 pos = transform.position;
+		//Code for limiting movement by boundaries
+		/*Vector3 pos = transform.position;
 		if(pos.y > HEIGHT) {
 			pos.y = HEIGHT;
 			//pos.y = camViewSize - shipBounderyRadious;
@@ -162,7 +167,7 @@ public class PlayerController : NetworkBehaviour {
 			pos.y = -HEIGHT;
 			//pos.y = -camViewSize + shipBounderyRadious;
 			transform.position = pos;
-		}
+		}*/
 
 		//float screenRatio  = (float)Screen.width / (float)Screen.height;
 		//float widthOrtho = camViewSize * screenRatio;
@@ -186,19 +191,14 @@ public class PlayerController : NetworkBehaviour {
 		//Debug.Log(CrossPlatformInputManager.GetAxis("VerticalRot")+" rota: "+ rotationvelocity);
 
 		rot = Quaternion.Euler(0,0,z);
-
 		transform.rotation = rot;
-
 		Vector3 pos2 = transform.position;
-
-		Vector3 velocity = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal") * speedForce * Time.deltaTime, CrossPlatformInputManager.GetAxis("Vertical") * speedForce * Time.deltaTime,0) * (isBoost? increaseBoost: defaultBoost);
-
+		Vector3 velocity = new Vector3(CrossPlatformInputManager.GetAxis("Horizontal") * speedForce * Time.deltaTime, 
+			CrossPlatformInputManager.GetAxis("Vertical") * speedForce * Time.deltaTime,0) * (isBoost? increaseBoost: defaultBoost);
 		pos2 += rot * velocity;
-
 		transform.position = pos2;*/
-
-
 	}
+
 	void Update() {
 		if(!isLocalPlayer)
 			return;
@@ -237,8 +237,8 @@ public class PlayerController : NetworkBehaviour {
 		//Spawn bullet on client
 		//Note: important to add velocity to the bullet before spawn the bullet on the client
 		NetworkServer.Spawn(bullet);
-
-		//destroy bullet after 2 segs
-		Destroy(bullet,2);
+		SoundEffectsHelper.Instance.MakePlayerShotSound();
+		//destroy bullet after 7 segs
+		Destroy(bullet, 7);
 	}
 }
