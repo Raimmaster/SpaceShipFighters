@@ -7,14 +7,14 @@ using UnityEngine.UI;
 
 public class PlayerController : NetworkBehaviour {
 	Rigidbody2D playerBody;
-	public float speedForce = 5f;
+	public float speedForce = 75f;
 	public float rotationvelocity = 5f;
 	public float increaseBoost = 10f;
 	public float defaultBoost = 1f;
 	private float fireDelay = 0.5f;
 	private float shootingTimer =0.0f;
 	//states
-	private bool isShoting=false;
+	private bool isShooting=false;
 	private float shipBounderyRadious = 0.5f;
 
 	//past mood
@@ -22,12 +22,18 @@ public class PlayerController : NetworkBehaviour {
 	public GameObject bulletprefab;
 	public Transform bulletspawn;
 	public RectTransform healthBar;
+	private Transform trPlayer;
 	public RectTransform ShootingBar;
 	public const float maxBurst = 75;
 	private float currentBurst = maxBurst;
 	private bool shootingBlocked = false;
+	private float camViewSize;
 	//[SyncVar (hook = "coolDown")]public bool cool = false;
 	// Use this for initialization
+
+	//limits
+	const float WIDTH = 45;
+	const float HEIGHT = 30;
 
 	void coolDown(bool cool){
 		if(cool){
@@ -46,9 +52,11 @@ public class PlayerController : NetworkBehaviour {
 			ShootingBar.sizeDelta = new Vector2(currentBurst, ShootingBar.sizeDelta.y);
 		}
 	}
+
 	void Start () {
 		playerBody = this.GetComponent<Rigidbody2D>();
 		moodState = 0;
+		camViewSize = Camera.main.orthographicSize;
 	}
 
 	public void setShootingState(float amount){
@@ -66,10 +74,10 @@ public class PlayerController : NetworkBehaviour {
 	void FixedUpdate () {
 		//Updating the player move
 		float shootingState = CrossPlatformInputManager.GetMood();
-		
+		Debug.Log("My x: " + transform.position.x + " My y: " + transform.position.y);
 		if ((moodState == 0 && shootingState > 0.5) || ( moodState == 1 && shootingState < 0.5))
 			setShootingState(shootingState);
-		
+
 		Vector2 moveVector = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"),
 			CrossPlatformInputManager.GetAxis("Vertical")) * speedForce;
 		bool isBoost = CrossPlatformInputManager.GetButton("Boton");
@@ -79,7 +87,7 @@ public class PlayerController : NetworkBehaviour {
 		float LO = CrossPlatformInputManager.GetAxis("VerticalRot");
 		float LA = CrossPlatformInputManager.GetAxis("HorizontalRot");
 		double B = Math.Atan(LO/LA) * 180 / Math.PI;
-		if(LA <0){
+		if(LA < 	0){
 			B +=180;
 		}
 		B += (-90);
@@ -90,10 +98,10 @@ public class PlayerController : NetworkBehaviour {
 		float z = playerBody.rotation+CrossPlatformInputManager.GetAxis("VerticalRot")*rotationvelocity;
 		rot = Quaternion.Euler(0,0,z);
 		healthBar.rotation = rot;
-		
-		//Fire Validation 
+
+		//Fire Validation
 		//before Input.GetKeyDown(KeyCode.Space)
-		
+
 		if(moodState == 1 && (LA!=0 || LO!=0)){
 			coolDown(true);
 			//cool = true;
@@ -107,23 +115,24 @@ public class PlayerController : NetworkBehaviour {
 			if(LA!=0 || LO!=0){
 				shootingTimer = fireDelay;
 				CmdFire();
-				isShoting = false;
+				isShooting = false;
 			}
-		}	
-		
+		}
+
 		//Restrict the ship to the camara's bounderies
+		/*
 		Vector3 pos = transform.position;
-		if(pos.y+shipBounderyRadious >Camera.main.orthographicSize) {
-			pos.y = Camera.main.orthographicSize- shipBounderyRadious;
+		if(pos.y + shipBounderyRadious > camViewSize) {
+			pos.y = camViewSize- shipBounderyRadious;
 			transform.position =pos;
 		}
-		if(pos.y-shipBounderyRadious < -Camera.main.orthographicSize) {
-			pos.y = -Camera.main.orthographicSize +shipBounderyRadious;
-			transform.position =pos;
+		if(pos.y-shipBounderyRadious < -camViewSize) {
+			pos.y = -camViewSize + shipBounderyRadious;
+			transform.position = pos;
 		}
 
 		float screenRatio  = (float)Screen.width / (float)Screen.height;
-		float widthOrtho = Camera.main.orthographicSize * screenRatio;
+		float widthOrtho = camViewSize * screenRatio;
 		if(pos.x+shipBounderyRadious >widthOrtho) {
 			pos.x = widthOrtho- shipBounderyRadious;
 			transform.position =pos;
@@ -131,8 +140,39 @@ public class PlayerController : NetworkBehaviour {
 		if(pos.x-shipBounderyRadious < -widthOrtho) {
 			pos.x = -widthOrtho +shipBounderyRadious;
 			transform.position =pos;
+		}*/
+		Debug.Log("Cam size: " + camViewSize);
+		Debug.Log("S Width: " + Screen.width);
+		Debug.Log("S Height: " + Screen.height);
+
+		Vector3 pos = transform.position;
+		if(pos.y > HEIGHT) {
+			pos.y = HEIGHT;
+			//pos.y = camViewSize - shipBounderyRadious;
+			transform.position = pos;
 		}
 
+		if(pos.y < -HEIGHT) {
+			pos.y = -HEIGHT;
+			//pos.y = -camViewSize + shipBounderyRadious;
+			transform.position = pos;
+		}
+
+		//float screenRatio  = (float)Screen.width / (float)Screen.height;
+		//float widthOrtho = camViewSize * screenRatio;
+		if(pos.x > WIDTH) {
+			pos.x = WIDTH;
+			//pos.x = camViewSize - shipBounderyRadious;
+			transform.position = pos;
+		}
+
+		if(pos.x  < -WIDTH) {
+			pos.x = -WIDTH;
+			//pos.x = -camViewSize + shipBounderyRadious;
+			transform.position = pos;
+		}
+
+		//end limit movement section
 		/*Quaternion rot = transform.rotation;
 		float z = rot.eulerAngles.z;
 
@@ -158,7 +198,7 @@ public class PlayerController : NetworkBehaviour {
 			return;
 		 if (Input.GetKeyDown(KeyCode.Escape)) 
     		Application.Quit(); 
-		
+
 		//Variable to control shooting time
 		shootingTimer -= Time.deltaTime;
 		//Debug.Log("U_mood: "+Time.deltaTime);
@@ -168,7 +208,7 @@ public class PlayerController : NetworkBehaviour {
 		}else{
 			fireDelay = 0.1f;
 		}
-		Debug.Log("Blocked: "+shootingBlocked);
+		Debug.Log("Blocked: " + shootingBlocked);
 		/*if (Input.GetKeyUp(KeyCode.Escape)) { 
 			if (Application.platform == RuntimePlatform.Android) { 
 				AndroidJavaObject activity = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic("currentActivity"); 
@@ -176,7 +216,7 @@ public class PlayerController : NetworkBehaviour {
 			} else { Application.Quit(); } 
 			}*/
 
-		//isShoting = CrossPlatformInputManager.GetButtonDown("Shot");
+		//isShooting = CrossPlatformInputManager.GetButtonDown("Shot");
 		//playerBody.MoveRotation(playerBody.rotation+rot*rotationForce);
 	}
 

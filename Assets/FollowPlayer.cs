@@ -15,7 +15,7 @@ public class FollowPlayer : MonoBehaviour {
 		{
 			this.transform.position = new Vector3(player.transform.position.x, 
 				player.transform.position.y, -550);
-			Debug.Log("Hey, hey, listen!");
+			//Debug.Log("Hey, hey, listen!");
 		}
 		else
 			player = GameObject.FindWithTag("Player");
