@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class PlayerController : NetworkBehaviour {
 	Rigidbody2D playerBody;
+	//[SerializeField] Camera charCam;
 	public float speedForce = 75f;
 	public float rotationvelocity = 5f;
 	public float increaseBoost = 10f;
@@ -54,9 +55,14 @@ public class PlayerController : NetworkBehaviour {
 	}
 
 	void Start () {
-		playerBody = this.GetComponent<Rigidbody2D>();
-		moodState = 0;
-		camViewSize = Camera.main.orthographicSize;
+		//if(isLocalPlayer){
+			playerBody = this.GetComponent<Rigidbody2D>();
+			camViewSize = Camera.main.orthographicSize;
+		//	GameObject.Find("Main Camera").SetActive(false);
+
+			moodState = 0;
+		//	charCam.enabled = true;
+		//}
 	}
 
 	public void setShootingState(float amount){
