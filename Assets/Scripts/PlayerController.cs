@@ -80,7 +80,7 @@ public class PlayerController : NetworkBehaviour {
 	void FixedUpdate () {
 		//Updating the player move
 		float shootingState = CrossPlatformInputManager.GetMood();
-		Debug.Log("My x: " + transform.position.x + " My y: " + transform.position.y);
+		//Debug.Log("My x: " + transform.position.x + " My y: " + transform.position.y);
 		if ((moodState == 0 && shootingState > 0.5) || ( moodState == 1 && shootingState < 0.5))
 			setShootingState(shootingState);
 
