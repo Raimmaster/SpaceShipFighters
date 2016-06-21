@@ -66,14 +66,12 @@ public class PlayerController : NetworkBehaviour {
 	}
 
 	public void setShootingState(float amount){
-		Debug.Log("amount: "+amount);
 		if(amount>0.5){
 			moodState = 1;
 		}
 		else{
 			moodState=0;
 		}
-		Debug.Log("getState_mood: "+moodState);
 	}
 
 	//FixedUpdate por usar vectores, fuerzas
@@ -125,6 +123,7 @@ public class PlayerController : NetworkBehaviour {
 			if(LA!=0 || LO!=0){
 				shootingTimer = fireDelay;
 				CmdFire();
+				//SoundEffectsHelper.Instance.MakePlayerShotSound();
 				isShooting = false;
 			}
 		}
@@ -151,9 +150,6 @@ public class PlayerController : NetworkBehaviour {
 			pos.x = -widthOrtho +shipBounderyRadious;
 			transform.position =pos;
 		}
-		Debug.Log("Cam size: " + camViewSize);
-		Debug.Log("S Width: " + Screen.width);
-		Debug.Log("S Height: " + Screen.height);
 
 		//Code for limiting movement by boundaries
 		/*Vector3 pos = transform.position;
@@ -214,7 +210,6 @@ public class PlayerController : NetworkBehaviour {
 		}else{
 			fireDelay = 0.1f;
 		}
-		Debug.Log("Blocked: " + shootingBlocked);
 		/*if (Input.GetKeyUp(KeyCode.Escape)) { 
 			if (Application.platform == RuntimePlatform.Android) { 
 				AndroidJavaObject activity = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic("currentActivity"); 
@@ -237,7 +232,7 @@ public class PlayerController : NetworkBehaviour {
 		//Spawn bullet on client
 		//Note: important to add velocity to the bullet before spawn the bullet on the client
 		NetworkServer.Spawn(bullet);
-		SoundEffectsHelper.Instance.MakePlayerShotSound();
+		//SoundEffectsHelper.Instance.MakePlayerShotSound();
 		//destroy bullet after 7 segs
 		Destroy(bullet, 7);
 	}

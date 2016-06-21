@@ -15,14 +15,20 @@ public class Health : NetworkBehaviour {
 		if(currentHealth <=0){
 			currentHealth =0;
 			Debug.Log("Dead");
-			SpecialEffects.Instance.Explosion(transform.position);
+			RpcExplosion();
+			//SpecialEffects.Instance.Explosion(transform.position);
 			Destroy(gameObject);
 		}
 		Debug.Log(currentHealth);
 
 	}
 
-	void OnChangeHealth(int health){
+	[ClientRpc]
+    void RpcExplosion()
+    {
+        SpecialEffects.Instance.Explosion(transform.position);
+    }
+	void OnChangeHealth(int health){		
 		healthBar.sizeDelta = new Vector2(health, healthBar.sizeDelta.y);
 	}
 }
