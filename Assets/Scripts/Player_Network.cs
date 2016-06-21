@@ -7,13 +7,15 @@ public class Player_Network : NetworkBehaviour {
 	//Player movements variables
 	[SyncVar] private Vector2 syncPosition;
 
-	public float movementLerpRate = 15;
+	private float movementLerpRate = 15;
 	private Transform playerTransform;
-
+	private Vector2 lastposition;
+	private float threshold = 0.5f;
 	//player rotation variables
 	[SyncVar] private Quaternion syncPlayerRotation;
-	
-	public float rotationLerpRate = 15;
+	private Quaternion lastPlayerRot;
+	private float rotThresHold = 5f;
+	private float rotationLerpRate = 15;
 
 	void Start () {
 		playerTransform = GetComponent<Transform>();
@@ -22,11 +24,14 @@ public class Player_Network : NetworkBehaviour {
 		}
 	}
 
-	private void FixedUpdate(){
+	void Update() {
 		LerpPosition();
 		Sendpostion();
 		LerpRotation();
 		SendRotation();
+	}
+
+	private void FixedUpdate(){
 	}
 
 	private void LerpPosition()
@@ -43,8 +48,9 @@ public class Player_Network : NetworkBehaviour {
 
 	[ClientCallback]
 	private void Sendpostion(){
-		if(isLocalPlayer)
+		if(isLocalPlayer && Vector2.Distance(playerTransform.position, lastposition)>threshold)
 			CmdProvidePosToServer(playerTransform.position);
+			lastposition = playerTransform.position;
 	}
 
 	private void LerpRotation(){
@@ -60,8 +66,11 @@ public class Player_Network : NetworkBehaviour {
 
 	[ClientCallback]
 	private void SendRotation(){
-		if(!isLocalPlayer){
-			CmdProvideRotationtoServer(playerTransform.rotation);
+		if(isLocalPlayer){
+			if(Quaternion.Angle(playerTransform.rotation, lastPlayerRot) > rotThresHold){
+				CmdProvideRotationtoServer(playerTransform.rotation);
+				lastPlayerRot = playerTransform.rotation;
+			}	
 		}
 	}
 }
